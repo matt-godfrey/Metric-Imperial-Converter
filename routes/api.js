@@ -24,27 +24,28 @@ module.exports = function (app) {
       let returnNum = convertHandler.convert(initNum, initUnit);
       let returnUnit = convertHandler.getReturnUnit(initUnit);
       let toString = convertHandler.getString(initNum, initUnit, returnNum, returnUnit);
-     console.log(initNum, initUnit, returnNum, returnUnit)
-      if (returnNum == 1 && returnUnit == "invalid unit") {
-        res.json("invalid unit and number")
-      }
+     
+      console.log(initNum, initUnit, returnNum, returnUnit)
+      let respObj = {};
+        respObj.initNum = initNum;
+        respObj.initUnit = initUnit;
+        respObj.returnNum = returnNum;
+        respObj.returnUnit = returnUnit;
+        respObj.string = toString;
 
       if (returnNum == "invalid number" && returnUnit == "invalid unit") {
-        res.json("invalid unit and number")
+        res.json("invalid number and unit")
       }
 
-     else if (returnUnit == "invalid unit" && returnNum) {
-        res.json("invalid unit")
+     else if (returnUnit == "invalid unit" && returnNum != "invalid number") {
+       
+        res.json(respObj.returnUnit)
       }
-      else if (!returnNum && returnUnit) {
-        res.json("invalid number")
+      else if (returnNum == "invalid number" && returnUnit != "invalid unit") {
+        res.json(respObj.returnNum)
       } else {
-        Number(initNum)
-        Number(returnNum)
-        
-        res.json({ initNum: initNum, initUnit: initUnit, returnNum: returnNum, returnUnit: returnUnit, string: toString})
+        res.json(respObj)
       }
-      
     });
     
 };

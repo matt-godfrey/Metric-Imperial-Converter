@@ -7,119 +7,127 @@
 */
 
 function ConvertHandler() {
-  
-  this.getNum = function(input) {
-    let result;
-    if (!input.match(/[0-9]/g)) {
-       result = 1;
-    }
-    else {
-  
-      num = input.match(/[a-z]+|[^a-z]+/gi)[0]
-      
-      if (num.indexOf("/") != -1) {
-        num = num.split("/")
-        num1 = Number(num[0])
-        num2 = Number(num[1])
-       
-        if (num.length > 2) {
-          result = "invalid number"
-        } else {
-          result = num1 / num2
-        }
-       
-      } else {
-        result = num
+  this.count = function(numStr, symbol) {
+    charCount = 0;
+    for (let i = 0; i < numStr.length; i++) {
+      if (numStr.charAt(i) == symbol) {
+        charCount++
       }
     }
+    return charCount;
+  }
+  this.getNum = function(input) {
+    let result;
+    result = input.match(/[a-z]+|[^a-z]+/gi)[0]
+    let operatorCount = this.count(result, '/');
+    if (!result.match(/[0-9]/g)) { result = 1}
+    if (operatorCount > 1) {
+      result = "invalid number"
+      // console.log("num invalid: too many //")
+    }
+    if (operatorCount == 1) {
+      result = result.split('/')
+      let num1 = parseFloat(result[0]);
+      let num2 = parseFloat(result[1]);
+      // console.log(result, num1, num2)
+      result = num1 / num2
+      
+    }
+    
   
     return result;
   };
   
   this.getUnit = function(input) {
     let result;
-    const unitsArr = ['km', 'lbs', 'kg', 'l', 'gal', 'mi']
-    if (!input.match(/[0-9]/g) && input.match(/[a-z]+|[^a-z]+/gi)) {
-      arr = [1, input]
-  } else {
-    arr = input.match(/[a-z]+|[^a-z]+/gi)
-  }
-   
-      num = parseFloat(arr[0])
-      units = arr[1]
-    
-    
-      for (let i = 0; i < unitsArr.length; i++) {
-        if (units.toLowerCase() == unitsArr[i]) {
-          result = units
-          return result
-        } else {
-          result = "invalid unit"
-        }
+    let units;
+    const unitsArr = ['km', 'lbs', 'kg', 'l', 'gal', 'mi', 'KM', 'LBS', 'KG', 'L', 'GAL', 'MI']
+    // const unitsArr = ['km', 'lbs', 'kg', 'l', 'L', 'gal', 'mi']
+    result = input.match(/[a-z]+|[^a-z]+/gi)
+
+    if (result.length > 1) {
+      units = result[1];
+    } else {
+      units = result[0]
     }
+    // console.log(units)
+        for (let i = 0; i < unitsArr.length; i++) {
+          if (units == unitsArr[i]) {
+            result = unitsArr[i]
+            
+            break;
+          } else {
+            result = "invalid unit"
+            
+          }
+      }
+    if (result === 'l') { result = result.toUpperCase(); }
+    if (result !== 'l' && result !== 'L') {
+      result = result.toLowerCase();
+    }
+    
     return result
   };
  
   this.getReturnUnit = function(initUnit) {
-    if (initUnit == "invalid unit" || initUnit == undefined) { return "invalid unit"}
-    // if (initUnit) {
-    //   initUnit = initUnit.toLowerCase();
-    // }
-    
     let result;
-    if (initUnit == "gal" || initUnit == "l" || initUnit == 'L') {
-      if (initUnit == "gal") {
-        result = "L"
+    if (initUnit == undefined) { initUnit = "invalid unit"}
+    if (initUnit == "invalid unit") { result = "invalid unit"}
+    
+    else {
+      if (initUnit == "gal" || initUnit == "GAL" || initUnit == "l" || initUnit == 'L') {
+        if (initUnit == "gal" || initUnit == "GAL") {
+          result = "L"
+        } else {
+          result = "gal"
+        }
+      }
+      else if (initUnit == "lbs" || initUnit == "LBS" || initUnit == "kg" || initUnit == "KG") {
+        if (initUnit == "lbs" || initUnit == "LBS") {
+          result = "kg"
+        } else {
+          result = "lbs"
+        }
+      }
+      else if (initUnit == "mi" || initUnit == "MI" || initUnit == "km" || initUnit == "KM") {
+        if (initUnit == "mi" || initUnit == "MI") {
+          result = "km"
+        } else {
+          result = "mi"
+        }
       } else {
-        result = "gal"
+        result = "invalid unit"
       }
     }
-    else if (initUnit == "lbs" || initUnit == "kg") {
-      if (initUnit == "lbs") {
-        result = "kg"
-      } else {
-        result = "lbs"
-      }
-    }
-    else if (initUnit == "mi" || initUnit == "km") {
-      if (initUnit == "mi") {
-        result = "km"
-      } else {
-        result = "mi"
-      }
-    } else {
-      return "invalid unit"
-    }
+    
     
     return result;
   };
 
   this.spellOutUnit = function(unit) {
     let result;
-    if (unit == "invalid unit" || unit == undefined) { return "invalid unit"}
-    if (unit) {
-      unit = unit.toLowerCase();
-    }
-    if (unit == "kg") {
-      result = "kilograms"
-    } 
-    else if (unit == "lbs") {
-      result = "pounds"
-    }
-    else if (unit == "mi") {
-      result = "miles"
-    }
-    else if (unit == "l") {
-      result = "liters"
-    }
-    else if (unit == "gal") {
-      result = "gallons"
-    }
-    else if (unit == "km") {
-      result = "kilometers"
+    if (unit == "invalid unit" || unit == undefined) { result = "invalid unit"}
+    else {
+      if (unit == "kg" || unit == "KG") {
+        result = "kilograms"
+      } 
+      else if (unit == "lbs" || unit == "LBS") {
+        result = "pounds"
+      }
+      else if (unit == "mi" || unit == "MI") {
+        result = "miles"
+      }
+      else if (unit == "l" || unit == "L") {
+        result = "liters"
+      }
+      else if (unit == "gal" || unit == "GAL") {
+        result = "gallons"
+      }
+      else if (unit == "km" || unit == "KM") {
+        result = "kilometers"
+      }
     }
     
-
     return result;
   };
   
@@ -128,20 +136,16 @@ function ConvertHandler() {
     const lbsToKg = 0.453592;
     const miToKm = 1.60934;
     let result;
-    
-    if (initNum == "invalid number" || initNum == undefined) { return result = "invalid number"}
-    if (initNum == 1 && initUnit == "invalid unit" || initUnit == undefined) {
-      return result = "invalid number"
+    if (initNum == "invalid number") { 
+      result = "invalid number"
+      return result; 
     }
-    else {
-      if (initUnit) {
-        initUnit = initUnit.toLowerCase();
-      }
+    if (initNum === 1 && initUnit == "invalid unit") {
+      initNum = "invalid number"
+      result = "invalid number"
+    } 
       
-      initNum = parseFloat(initNum)
-      
-      
-      if (initUnit == "gal" || initUnit == "l") {
+      if (initUnit == "gal" || initUnit == "l" || initUnit == "L") {
         if (initUnit == "gal") {
           result = initNum * galToL
         } else {
@@ -163,36 +167,34 @@ function ConvertHandler() {
         } else {
           result = initNum / miToKm
         }
-      } else {
-        result = initNum
       }
-      result = Math.round(result * 1e5) / 1e5
-    } 
+      
+      if (result != "invalid number") { result = Math.round(result * 1e5) / 1e5 }
+    
     return result
   };
   
   this.getString = function(initNum, initUnit, returnNum, returnUnit) {
     let result;
-
-    if (initNum == "invalid number" || initNum == undefined) {
-      return "invalid number"
-    } else {
-      returnUnit = this.spellOutUnit(returnUnit)
-    }
-    if (initUnit == "invalid unit" || initUnit == undefined) {
-      return "invalid unit"
-    } else {
+    if (initNum === undefined) { initNum = "invalid number"}
+    if (initUnit === undefined) { initUnit = "invalid unit"}
+    
+    if (initUnit != "invalid unit" && initNum != "invalid number") { 
       initUnit = this.spellOutUnit(initUnit)
+      returnUnit = this.spellOutUnit(returnUnit)
+      result = initNum + " " + initUnit + " converts to " + returnNum + " " + returnUnit
     }
     
-    if (initNum === 1 && initUnit != "invalid unit" && initUnit != undefined) {
+    
+    if (initNum === 1 && initUnit != "invalid unit") {
     
       initUnit = initUnit.slice(0, initUnit.length - 1)
     }
     if (returnNum === 1 && initUnit != "invalid unit") {
       returnUnit = returnUnit.slice(0, returnUnit.length - 1)
     }
-    result = initNum + " " + initUnit + " converts to " + returnNum + " " + returnUnit
+    
+    // console.log("initNum = "+initNum, "initUnit = "+initUnit, "returnNum = "+returnNum, "returnUnit = "+returnUnit)
     
     return result;
   };

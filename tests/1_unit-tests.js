@@ -60,15 +60,16 @@ suite('Unit Tests', function(){
       let input = ['gal','l','mi','km','lbs','kg','GAL','L','MI','KM','LBS','KG'];
       
       input.forEach(function(ele) {
-        console.log(ele, convertHandler.getUnit(ele))
-        assert.equal(convertHandler.getUnit(ele), ele)
+        let expected;
+     
+        assert.equal(convertHandler.getUnit(ele), expected == "L"?expected="L":ele)
       });
       done();
     });
     
     test('Unknown Unit Input', function(done) {
       let input = 'ml';
-      console.log(convertHandler.getUnit(input)+ " should equal invalid unit")
+      
       assert.equal(convertHandler.getUnit(input), 'invalid unit')
       done();
     });  
@@ -112,7 +113,8 @@ suite('Unit Tests', function(){
     
     test('L to Gal', function(done) {
       let input = [5, 'L'];
-      let expected = 1.3208;
+      let expected = 1.32086;
+      
       assert.approximately(convertHandler.convert(input[0],input[1]),expected,0.1)
       done();
     });
